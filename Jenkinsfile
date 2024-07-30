@@ -1,0 +1,62 @@
+pipeline {
+    agent any
+
+    environment {
+       ENV = "Nginx"
+    }
+
+    stages {
+        stage('Create  directory for the WEB Application')
+        {
+            steps{
+               
+                //Fisrt, drop the directory if exists
+                sh 'rm -rf /home/jenkins/app-web'
+                //Create the directory
+                sh 'mkdir /home/jenkins/app-web'
+                
+            }
+        }
+        stage('Drop the container'){
+            steps {
+            echo 'droping the container...'
+            sh 'docker rm -f app-web'
+            }
+        }
+        stage('Create the Tomcat container') {
+            when {
+                environment name: 'ENV', value: 'Apache'
+            }
+            steps {
+            echo 'Creating the container...'
+            sh '            sh 'docker run -dit --name app-web -p 9100:80  -v /home/jenkins/app-web:/usr/local/apache2/htdocs/ httpd'
+'
+            }
+        }
+        stage('Copy the web application to the container directory') {
+            steps {
+                echo 'Creating the shopping folder in the container'
+                sh 'mkdir /home/jenkins/tomcat-web/shopping'
+                echo 'Copying web application...'             
+                sh 'cp -r web/* /home/jenkins/app-web'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'These steps are always executed'   
+        }
+      
+        success {
+        // One or more steps need to be included within each condition's block.
+          echo 'the deployment has worked'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'web/*', followSymlinks: false
+          cleanWs()         
+
+       }
+       failure {
+        // One or more steps need to be included within each condition's block.
+        echo 'An error has ocurred'       
+ }
+}
