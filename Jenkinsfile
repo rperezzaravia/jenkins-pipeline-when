@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-       ENV = "Nginx"
+       ENV = "Apache"
     }
 
     stages {
@@ -23,7 +23,7 @@ pipeline {
             sh 'docker rm -f app-web'
             }
         }
-        stage('Create the Tomcat container') {
+        stage('Create the Apache container') {
             when {
                 environment name: 'ENV', value: 'Apache'
             }
@@ -57,5 +57,6 @@ pipeline {
        failure {
         // One or more steps need to be included within each condition's block.
         echo 'An error has ocurred'       
- }
+       }
+    }
 }
