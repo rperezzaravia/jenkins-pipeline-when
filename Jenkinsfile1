@@ -1,10 +1,9 @@
 pipeline {
     agent any
-    
-   parameters {
-  choice choices: ['Apache', 'Nginx'], name: 'WEBSERVER'
-}
-
+    parameters {
+       choice choices: ['Apache', 'Nginx'], name: 'WEBSERVER'
+    }
+       
     stages {
         stage('Create  directory for the WEB Application')
         {
