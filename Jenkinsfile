@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-       ENV = "Apache"
+       ENV = "Nginx"
     }
 
     stages {
