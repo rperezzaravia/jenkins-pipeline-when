@@ -32,6 +32,15 @@ pipeline {
             sh 'docker run -dit --name app-web -p 9100:80  -v /home/jenkins/app-web:/usr/local/apache2/htdocs/ httpd'
             }
         }
+        stage('Create the Nginx container') {
+            when {
+                environment name: 'ENV', value: 'Nginx'
+            }
+            steps {
+            echo 'Creating the container...'
+            sh 'docker run -dit --name app-web -p 9100:80  -v /home/jenkins/app-web:/usr/share/nginx/html nginx'
+            }
+        }
         stage('Copy the web application to the container directory') {
             steps {
                 echo 'Copying web application...'             
