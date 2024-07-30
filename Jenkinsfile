@@ -29,7 +29,7 @@ pipeline {
             }
             steps {
             echo 'Creating the container...'
-            sh '            sh 'docker run -dit --name app-web -p 9100:80  -v /home/jenkins/app-web:/usr/local/apache2/htdocs/ httpd'
+            sh 'docker run -dit --name app-web -p 9100:80  -v /home/jenkins/app-web:/usr/local/apache2/htdocs/ httpd'
 '
             }
         }
