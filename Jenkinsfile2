@@ -31,7 +31,7 @@ pipeline {
                 allOf {           
                  environment name: 'WEBSERVER', value: 'Apache'
                  not {equals(actual: currentBuild.number, expected: 1)}
-            }
+                }
              }
             steps {
             echo 'Creating the container...'
@@ -45,6 +45,7 @@ pipeline {
                  environment name: 'WEBSERVER', value: 'Apache'
                  not {equals(actual: currentBuild.number, expected: 1)}
             }
+             }
             steps {
             echo 'Creating the container...'
             sh 'docker run -dit --name app-web -p 9100:80  -v /home/jenkins/app-web:/usr/share/nginx/html nginx'
