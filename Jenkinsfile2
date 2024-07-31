@@ -3,7 +3,6 @@ pipeline {
     parameters {
        choice choices: ['Apache', 'Nginx'], name: 'WEBSERVER'
        choice choices: ['Development', 'Test','Production'], name: 'ENV'
-
     }
        
     stages {
@@ -34,8 +33,7 @@ pipeline {
              when {
                 allOf {           
                  environment name: 'WEBSERVER', value: 'Apache'
-                 environment name: 'ENV', value: 'Development'
-                 
+                 environment name: 'ENV', value: 'Development'                
                 }
              }
             steps {
@@ -44,7 +42,7 @@ pipeline {
             }
         }
         //Nginx webserver in Test
-        stage('Create the Nginx containerin Test') {
+        stage('Create the Nginx container in Test') {
              when {
                 allOf {           
                  environment name: 'WEBSERVER', value: 'Nginx'
@@ -82,7 +80,7 @@ pipeline {
             }
 
             steps {
-            echo 'Apache cannot be deployed in Test or Production environments...'
+            echo 'Nginx cannot be deployed in Development...'
          
             }
         }
@@ -91,7 +89,7 @@ pipeline {
          stage('Error message Apache') {
            when {
                 allOf {
-                     environment name: 'WEBSERVER', value: 'Apache'
+                    environment name: 'WEBSERVER', value: 'Apache'
                     anyOf {
                         environment name: 'ENV', value: 'Test'
                         environment name: 'ENV', value: 'Production'
