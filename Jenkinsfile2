@@ -25,12 +25,13 @@ pipeline {
             sh 'docker rm -f app-web'
             }
         }
+
         // Apache Webserver
         stage('Create the Apache container') {
              when {
                 allOf {           
                  environment name: 'WEBSERVER', value: 'Apache'
-                 not {equals(actual: currentBuild.number, expected: 1)}
+                 equals(actual: currentBuild.number, expected: 1)
                 }
              }
             steps {
@@ -42,8 +43,8 @@ pipeline {
         stage('Create the Nginx container') {
              when {
                 allOf {           
-                 environment name: 'WEBSERVER', value: 'Apache'
-                 not {equals(actual: currentBuild.number, expected: 1)}
+                 environment name: 'WEBSERVER', value: 'Nginx'
+                 equals(actual: currentBuild.number, expected: 1)
             }
              }
             steps {
