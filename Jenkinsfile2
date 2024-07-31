@@ -7,6 +7,9 @@ pipeline {
     stages {
         stage('Create  directory for the WEB Application')
         {
+            when { 
+                equals(actual: currentBuild.number, expected: 1)
+            }
             steps{
                
                 //Fisrt, drop the directory if exists
@@ -16,10 +19,14 @@ pipeline {
                 
             }
         }
-        stage('Drop the container'){
-            when { 
-                equals(actual: currentBuild.number, expected: 1)
-            }
+        stage('Drop the container'){   
+            input {
+  message 'Enter the deploy data'
+  parameters {
+    choice choices: ['Apache', 'Nginx'], name: 'WEBSERVER'
+    choice choices: ['Development', 'Test', 'Production'], name: 'ENV'
+  }
+}     
             steps {
             echo 'droping the container...'
             sh 'docker rm -f app-web'
@@ -31,7 +38,8 @@ pipeline {
              when {
                 allOf {           
                  environment name: 'WEBSERVER', value: 'Apache'
-                 equals(actual: currentBuild.number, expected: 1)
+                 environment name: 'ENV', value: 'Development'
+                 
                 }
              }
             steps {
@@ -44,7 +52,7 @@ pipeline {
              when {
                 allOf {           
                  environment name: 'WEBSERVER', value: 'Nginx'
-                 equals(actual: currentBuild.number, expected: 1)
+                 environment name: 'ENV', value: 'Test'
             }
              }
             steps {
@@ -52,9 +60,8 @@ pipeline {
             sh 'docker run -dit --name app-web -p 9100:80  -v /home/jenkins/app-web:/usr/share/nginx/html nginx'
          
             }
-        }
-
-        
+        }    
+        //Copy the application   
         stage('Copy the web application to the container directory') {
             steps {
                 echo 'Copying web application...'             
