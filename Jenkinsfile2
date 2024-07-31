@@ -2,7 +2,7 @@ pipeline {
     agent any
     parameters {
        choice choices: ['Apache', 'Nginx'], name: 'WEBSERVER'
-       choice choices: ['Development', 'Test'], name: 'ENV'
+       choice choices: ['Development', 'Test','Production'], name: 'ENV'
 
     }
        
@@ -29,7 +29,7 @@ pipeline {
             }
         }
 
-        // Apache Webserver
+        // Apache Webserver in Development
         stage('Create the Apache container') {
              when {
                 allOf {           
@@ -43,7 +43,7 @@ pipeline {
             sh 'docker run -dit --name app-web -p 9100:80  -v /home/jenkins/app-web:/usr/local/apache2/htdocs/ httpd'
             }
         }
-        //Nginx webserver
+        //Nginx webserver in Test
         stage('Create the Nginx container') {
              when {
                 allOf {           
@@ -56,7 +56,39 @@ pipeline {
             sh 'docker run -dit --name app-web -p 9100:80  -v /home/jenkins/app-web:/usr/share/nginx/html nginx'
          
             }
-        }    
+        }
+        //Nginx Webserver in Production
+        stage('Create the Nginx container') {
+             when {
+                allOf {           
+                 environment name: 'WEBSERVER', value: 'Nginx'
+                 environment name: 'ENV', value: 'Production'
+            }
+             }
+            steps {
+            echo 'Creating the container...'
+            sh 'docker run -dit --name app-web -p 9100:80  -v /home/jenkins/app-web:/usr/share/nginx/html nginx'
+         
+            }
+        }
+        //Error is Webserver is Apache and Env is Test or Production
+         stage('Error message') {
+           when {
+                allOf {
+                     environment name: 'WEBSERVER', value: 'Apache'
+                    anyOf {
+                        environment name: 'ENV', value: 'Test'
+                        environment name: 'ENV', value: 'Production'
+                     }
+                }
+            }
+
+            steps {
+            echo 'Apache cannot be deployed in Test or Production environments...'
+         
+            }
+        }
+
         //Copy the application   
         stage('Copy the web application to the container directory') {
             steps {
