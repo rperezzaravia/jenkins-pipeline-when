@@ -2,6 +2,8 @@ pipeline {
     agent any
     parameters {
        choice choices: ['Apache', 'Nginx'], name: 'WEBSERVER'
+       choice choices: ['Development', 'Test'], name: 'ENV'
+
     }
        
     stages {
@@ -20,13 +22,7 @@ pipeline {
             }
         }
         stage('Drop the container'){   
-            input {
-  message 'Enter the deploy data'
-  parameters {
-    choice choices: ['Apache', 'Nginx'], name: 'WEBSERVER'
-    choice choices: ['Development', 'Test', 'Production'], name: 'ENV'
-  }
-}     
+            
             steps {
             echo 'droping the container...'
             sh 'docker rm -f app-web'
