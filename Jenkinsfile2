@@ -17,7 +17,7 @@ pipeline {
             }
         }
         stage('Drop the container'){
-            when {
+            when { 
                 equals(actual: currentBuild.number, expected: 1)
             }
             steps {
@@ -27,9 +27,12 @@ pipeline {
         }
         // Apache Webserver
         stage('Create the Apache container') {
-            when {
+             when {
+                allOf {           
                  environment name: 'WEBSERVER', value: 'Apache'
+                 not {equals(actual: currentBuild.number, expected: 1)}
             }
+             }
             steps {
             echo 'Creating the container...'
             sh 'docker run -dit --name app-web -p 9100:80  -v /home/jenkins/app-web:/usr/local/apache2/htdocs/ httpd'
@@ -37,8 +40,10 @@ pipeline {
         }
         //Nginx webserver
         stage('Create the Nginx container') {
-            when {
-                 environment name: 'WEBSERVER', value: 'Nginx'
+             when {
+                allOf {           
+                 environment name: 'WEBSERVER', value: 'Apache'
+                 not {equals(actual: currentBuild.number, expected: 1)}
             }
             steps {
             echo 'Creating the container...'
