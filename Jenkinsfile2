@@ -30,7 +30,7 @@ pipeline {
         }
 
         // Apache Webserver in Development
-        stage('Create the Apache container') {
+        stage('Create the Apache container in Development') {
              when {
                 allOf {           
                  environment name: 'WEBSERVER', value: 'Apache'
@@ -44,7 +44,7 @@ pipeline {
             }
         }
         //Nginx webserver in Test
-        stage('Create the Nginx container') {
+        stage('Create the Nginx containerin Test') {
              when {
                 allOf {           
                  environment name: 'WEBSERVER', value: 'Nginx'
@@ -58,7 +58,7 @@ pipeline {
             }
         }
         //Nginx Webserver in Production
-        stage('Create the Nginx container') {
+        stage('Create the Nginx container in Production') {
              when {
                 allOf {           
                  environment name: 'WEBSERVER', value: 'Nginx'
